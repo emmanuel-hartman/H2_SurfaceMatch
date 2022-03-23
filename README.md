@@ -1,5 +1,7 @@
 H2SurfaceMatching
 =========
+![Skull_Geod](figures/skulls.gif)
+=========
 
 Description
 -----------
