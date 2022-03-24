@@ -1,6 +1,10 @@
 H2SurfaceMatching
 =========
-![Skull_Geod](figures/skulls.gif)
+<img src="figures/cat-lion.gif" height="300" /><img src="figures/faces.gif" height="300" /><img src="figures/skulls.gif" height="300" />
+
+<img src="figures/ankle.gif" height="300" /><img src="figures/hands.gif" height="300" /><img src="figures/femur.gif" height="300" />
+
+
 =========
 
 Description
