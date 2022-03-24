@@ -1,10 +1,13 @@
 H2SurfaceMatching
 =========
-<img src="figures/cat-lion.gif" height="300" /><img src="figures/faces.gif" height="300" /><img src="figures/skulls.gif" height="300" />
-
-<img src="figures/ankle.gif" height="300" /><img src="figures/hands.gif" height="300" /><img src="figures/femur.gif" height="300" />
-
-
+<table>
+<tr>
+<td><img src="figures/faces.gif" height="300" /></td><td><img src="figures/skulls.gif" height="300" /></td><td><img src="figures/ankle.gif" height="300" /></td>
+</tr>
+<tr>
+<td><img src="figures/hands.gif" height="300" /></td><td><img src="figures/femur.gif" height="200" /></td><td><img src="figures/cat-lion.gif" height="300" /></td>
+</tr>
+</table>
 =========
 
 Description
