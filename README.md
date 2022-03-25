@@ -8,15 +8,12 @@ H2SurfaceMatching
 <td><img src="figures/hands.gif" height="300" /></td><td><img src="figures/femur.gif" height="200" /></td><td><img src="figures/cat-lion.gif" height="300" /></td>
 </tr>
 </table>
-=========
+
 
 Description
 -----------
 
-This Python package provides a set of tools for the comparison, matching and interpolation of triangulated surfaces within the elastic shape analysis setting. It allows specifically to solve the geodesic matching and distance computation problem between two surfaces with respect to a second order Sobolev metric.
-
-References
-------------
+This Python package provides a set of tools for the comparison, matching and interpolation of triangulated surfaces within the elastic shape analysis setting. It allows specifically to solve the geodesic matching and distance computation problem between two surfaces with respect to a second order Sobolev metric. In addition to basic shape matching, we develop a comprehensive statistical pipeline that allows for the computation of the Karcher means, tangent space principal component analysis, and motion transfer in the space of parametrized surfaces and in shape space. Thus, our framework is equipped to handle statistical analysis of populations of shapes. Further to improve the robustness of our model, we implement a weighted varifold matching framework for partial matching. By implementing partiality in our methods we allow for the analysis of shape populations that a include surfaces that are noisy or are missing data. Further, this adaptation allows for a more natural comparison of shapes with different mesh structures and even allows for the comparison of shapes with different topologies.
 
 
 
@@ -33,11 +30,6 @@ The code involves in addition the following Python libraries:
 * Open3D 0.12.0
 
 Note that Open3d is primarily used for surface reading, saving, visualization and simple mesh processing operations (decimation, subdivision...). Other libraries such as PyMesh could be used as potential replacement with relatively small modifications to our code.  
-
-
-Usage
------
-
 
 
 Licence
