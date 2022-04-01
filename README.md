@@ -68,9 +68,12 @@ this program. If not, see http://www.gnu.org/licenses/.
 
 Contacts
 --------
-Emmanuel Hartman: ehartman(at)math.fsu.edu
-Martin Bauer:     bauer(at)math.fsu.edu
-Yashil Sukurdeep: yashil.sukurdeep(at)jhu.edu
-Nicolas Charon:   ncharon1(at)jhu.edu
+    Emmanuel Hartman: ehartman(at)math.fsu.edu
+
+    Martin Bauer:     bauer(at)math.fsu.edu
+
+    Yashil Sukurdeep: yashil.sukurdeep(at)jhu.edu
+
+    Nicolas Charon:   ncharon1(at)jhu.edu
 
 
