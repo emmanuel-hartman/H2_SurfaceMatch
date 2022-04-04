@@ -209,6 +209,7 @@ def enr_match_H2(VS, VT, FT, FunT, F_sol, Fun_sol, B_sol, weight_coef_dist_T=1, 
     return energy
 
 
+
 def enr_match_H2_sym_w(VS, FS, FunS, VT, FT, FunT, F_sol, Fun_sol, Rho, B_sol, weight_coef_dist_S=1 ,weight_coef_dist_T=1, weight_Gab = 1,a0=1,a1=1,b1=1,c1=1,d1=1,a2=1, **objfun):
 
     K = VKerenl(objfun['kernel_geom'],objfun['kernel_grass'],objfun['kernel_fun'],objfun['sig_geom'],objfun['sig_grass'],objfun['sig_fun'])
@@ -221,9 +222,10 @@ def enr_match_H2_sym_w(VS, FS, FunS, VT, FT, FunT, F_sol, Fun_sol, Rho, B_sol, w
     def energy(geod,Rho):
         enr=getPathEnergyH2(geod,a0,a1,b1,c1,d1,a2,F_sol)
         N=geod.shape[0]    
-        E=weight_Gab*enr + weight_coef_dist_S*dataloss_S(geod[0]) + weight_coef_dist_T*dataloss_T(geod[N-1],torch.clamp(Rho,-.25,1.25))#+.01*penalty(geod[N-1],F_sol, Rho)
+        E=weight_Gab*enr + weight_coef_dist_S*dataloss_S(geod[0]) + weight_coef_dist_T*dataloss_T(geod[N-1],Rho)#torch.clamp(Rho,-.25,1.25)+.01*penalty(geod[N-1],F_sol, Rho)
         return E
     return energy
+
 
 def enr_match_weight(VT,FT,FunT,V_sol,F_sol, Fun_sol, B_sol,weight_coef_dist_T=1, **objfun):
 
@@ -234,7 +236,7 @@ def enr_match_weight(VT,FT,FunT,V_sol,F_sol, Fun_sol, B_sol,weight_coef_dist_T=1
     
     
     def energy(Rho):
-        E=weight_coef_dist_T*dataloss_T(V_sol,torch.clamp(Rho,-.25,1.25))
+        E=weight_coef_dist_T*dataloss_T(V_sol,Rho)#torch.clamp(Rho,-.25,1.25)
         return E
     return energy
 
