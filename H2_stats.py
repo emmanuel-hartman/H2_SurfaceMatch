@@ -105,7 +105,7 @@ def H2UnparamKMean(samples,template,a0,a1,b1,c1,d1,a2,paramlist, N=None, geodesi
 
 def H2_UnparamPCA(V0,samples,F0,a0,a1,b1,c1,d1,a2,paramlist,components=1,tol=None, geods=None):
     N=len(samples)        
-    T=np.zeros((len(samples), V0.shape[0]*3))
+    T=np.zeros((len(samples), V0.shape[0],3))
     if geods is None:
         for i in range(0,len(samples)):
             print('Computing Tangent Vector in the direction of sample {}/{}'.format(i+1,N))
@@ -154,13 +154,13 @@ def H2_UnparamPCA(V0,samples,F0,a0,a1,b1,c1,d1,a2,paramlist,components=1,tol=Non
                 evector+=evector_d[i,j]*M[j]
             
             print(evector.shape)
-            PC1p,F=H2InitialValueProblem(V0,3*evector,k,a0,a1,b1,c1,d1,a2,F0)
-            PC1n,F=H2InitialValueProblem(V0,-3*evector,k,a0,a1,b1,c1,d1,a2,F0)
+            PC1p,F=H2InitialValueProblem(V0,st_devs*evector,k,a0,a1,b1,c1,d1,a2,F0)
+            PC1n,F=H2InitialValueProblem(V0,-1*st_devs*evector,k,a0,a1,b1,c1,d1,a2,F0)
             PC1=np.concatenate((np.flip(PC1n,axis=0),PC1p[1:]),axis=0)
             PCs+=[PC1]
         return evalue,evector,PCs
     
-def H2PCA(V0,samples,F0,a0,a1,b1,c1,d1,a2,paramlist,components=1,tol=None, geods=None):
+def H2PCA(V0,samples,F0,a0,a1,b1,c1,d1,a2,paramlist,components=1,tol=None, geods=None, st_devs=1):
     N=len(samples)        
     T=np.zeros((len(samples), V0.shape[0],3))
     if geods is None:
@@ -199,8 +199,8 @@ def H2PCA(V0,samples,F0,a0,a1,b1,c1,d1,a2,paramlist,components=1,tol=None, geods
             
             print(evector.shape)
             if evalue[i]>tol:
-                PC1p,F=H2InitialValueProblem(V0,3*evector,k,a0,a1,b1,c1,d1,a2,F0)
-                PC1n,F=H2InitialValueProblem(V0,-3*evector,k,a0,a1,b1,c1,d1,a2,F0)
+                PC1p,F=H2InitialValueProblem(V0,st_devs*evector,k,a0,a1,b1,c1,d1,a2,F0)
+                PC1n,F=H2InitialValueProblem(V0,-1*st_devs*evector,k,a0,a1,b1,c1,d1,a2,F0)
                 PC1=np.concatenate((np.flip(PC1n,axis=0),PC1p[1:]),axis=0)
                 PCs+=[PC1]
             return evalue,evector,PCs
