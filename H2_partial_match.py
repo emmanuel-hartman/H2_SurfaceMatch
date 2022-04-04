@@ -103,9 +103,10 @@ def SymmetricH2Matching_W(source,target,geod,F_init,Rho_init,a0,a1,b1,c1,d1,a2,p
     
     inp_vect=np.concatenate((geod.cpu().numpy().flatten(),Rho_sol.cpu().numpy().flatten()))
     
-    #bounds=([None]*n*N*3).append([(0,1)]*n)
     
-    xopt,fopt,Dic=fmin_l_bfgs_b(funopt, inp_vect, fprime=dfunopt, pgtol=1e-05, epsilon=1e-08, maxiter=max_iter, iprint = 0, maxls=20,maxfun=150000)
+    bounds=([(-np.inf,np.inf)]*n*N*3).append([(0,1)]*n)
+    
+    xopt,fopt,Dic=fmin_l_bfgs_b(funopt, inp_vect, fprime=dfunopt, bounds=bounds,pgtol=1e-05, epsilon=1e-08, maxiter=max_iter, iprint = 0, maxls=20,maxfun=150000)
     geod = xopt[0:int(n*N*3)]
     Rho = xopt[int(n*N*3):]
     return geod,Rho,fopt,Dic
@@ -187,9 +188,9 @@ def WeightUpdate(source,target,geod,F_init,Rho_init,param):
     
     inp_vect=Rho_sol.cpu().numpy().flatten()
     
-    #bounds=([None]*n*N*3).append([(0,1)]*n)
+    bounds=([(-np.inf,np.inf)]*n*N*3).append([(0,1)]*n)
     
-    xopt,fopt,Dic=fmin_l_bfgs_b(funopt, inp_vect, fprime=dfunopt, pgtol=1e-05, epsilon=1e-08, maxiter=max_iter, iprint = 1, maxls=20,maxfun=150000)
+    xopt,fopt,Dic=fmin_l_bfgs_b(funopt, inp_vect, fprime=dfunopt, bounds=bounds ,pgtol=1e-05, epsilon=1e-08, maxiter=max_iter, iprint = 1, maxls=20,maxfun=150000)
     Rho = xopt
     return Rho
 
@@ -279,9 +280,6 @@ def H2MultiRes(source,target,a0,a1,b1,c1,d1,a2,resolutions,paramlist,start=None,
         
         if weight_only:
             Rho0=WeightUpdate(source,target,np.array(geod),F0,Rho0,params)
-            Rho0=np.clip(Rho0,0,1)
         
-        if partial:
-            Rho0=np.clip(Rho0,0,1)
     print(F0.shape)
     return geod,Rho0,F0

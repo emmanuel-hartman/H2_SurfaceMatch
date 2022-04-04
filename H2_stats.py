@@ -111,73 +111,136 @@ def H2_UnparamPCA(V0,samples,F0,a0,a1,b1,c1,d1,a2,paramlist,components=1,tol=Non
             print('Computing Tangent Vector in the direction of sample {}/{}'.format(i+1,N))
             geod,F0=H2StandardIterative([V0,F0],[samples[i][0],samples[i][1]],a0,a1,b1,c1,d1,a2,paramlist)
             k=geod.shape[0]
-            T[i,:]=(k-1)*(geod[1]-geod[0]).flatten()
+            T[i,:]=(geod[1]-geod[0])
     else:
         for i in range(0,len(samples)):
             geod=geods[i]
             k=geod.shape[0]
-            T[i,:]=(k-1)*(geod[1]-geod[0]).flatten()
+            T[i,:]=(geod[1]-geod[0])
         samples=geods[N-1]
-    M = (T-mean(T.T,axis=1)).T
-    [evalue,evector] = linalg.eig(cov(M))
-    perm=(-1*evalue).argsort()
-    evalue=np.real(evalue)[perm]
-    evector=np.real(evector.T).reshape((-1,V0.shape[0],3))[perm]
+        
+    F_sol= torch.from_numpy(F0).to(dtype=torch.long, device=torchdeviceId) 
+    V = torch.from_numpy(V0).to(dtype=torchdtype, device=torchdeviceId)    
+    M = torch.from_numpy((T-mean(T,axis=0))).to(dtype=torchdtype, device=torchdeviceId)    
+    cov=np.zeros((M.shape[0],M.shape[0]))
     
-    print(evalue/evalue.sum())
     
+    for i in range(0,M.shape[0]):
+        for j in range(i,M.shape[0]):
+            cov[i,j]=getH2Metric(V,M[i,:,:],M[j,:,:],a0,a1,b1,c1,d1,a2,F_sol)
+            cov[j,i]=cov[i,j]
+    
+    [evalue,evector] = linalg.eig(cov)
+    evector_d=np.real(evector).T
+    M=M.cpu().numpy()
     PCs=[]
     if tol is not None:
-        for i in range(0,coeff.shape[0]):
+        for i in range(0,evalue.shape[0]):
+            evector=np.zeros((M.shape[1],3))
+            for j in range(0,evalue.shape[0]):
+                evector+=evector_d[i,j]*M[j]
+            
+            print(evector.shape)
             if evalue[i]>tol:
-                PC1p,F=H2InitialValueProblem(V0,evalue[i]*evector[i],k,a0,a1,b1,c1,d1,a2,F0)
-                PC1n,F=H2InitialValueProblem(V0,-evalue[i]*evector[i],k,a0,a1,b1,c1,d1,a2,F0)
+                PC1p,F=H2InitialValueProblem(V0,3*evector,k,a0,a1,b1,c1,d1,a2,F0)
+                PC1n,F=H2InitialValueProblem(V0,-3*evector,k,a0,a1,b1,c1,d1,a2,F0)
                 PC1=np.concatenate((np.flip(PC1n,axis=0),PC1p[1:]),axis=0)
                 PCs+=[PC1]
             return evalue,evector,PCs
     else:
         for i in range(0,components):
-            PC1p,F=H2InitialValueProblem(V0,evalue[i]*evector[i],k,a0,a1,b1,c1,d1,a2,F0)
-            PC1n,F=H2InitialValueProblem(V0,-evalue[i]*evector[i],k,a0,a1,b1,c1,d1,a2,F0)
+            evector=np.zeros((M.shape[1],3))
+            for j in range(0,evalue.shape[0]):
+                evector+=evector_d[i,j]*M[j]
+            
+            print(evector.shape)
+            PC1p,F=H2InitialValueProblem(V0,3*evector,k,a0,a1,b1,c1,d1,a2,F0)
+            PC1n,F=H2InitialValueProblem(V0,-3*evector,k,a0,a1,b1,c1,d1,a2,F0)
             PC1=np.concatenate((np.flip(PC1n,axis=0),PC1p[1:]),axis=0)
             PCs+=[PC1]
         return evalue,evector,PCs
     
 def H2PCA(V0,samples,F0,a0,a1,b1,c1,d1,a2,paramlist,components=1,tol=None, geods=None):
     N=len(samples)        
-    T=np.zeros((len(samples), V0.shape[0]*3))
+    T=np.zeros((len(samples), V0.shape[0],3))
     if geods is None:
         for i in range(0,len(samples)):
             print('Computing Tangent Vector in the direction of sample {}/{}'.format(i+1,N))
             geod,F0=H2Parameterized([V0,F0],[samples[i],F0],a0,a1,b1,c1,d1,a2,paramlist)
             k=geod.shape[0]
-            T[i,:]=(k-1)*(geod[1]-geod[0]).flatten()
+            T[i,:]=(geod[1]-geod[0])
     else:
         for i in range(0,len(samples)):
             geod=geods[i]
             k=geod.shape[0]
-            T[i,:]=(k-1)*(geod[1]-geod[0]).flatten()
+            T[i,:]=(geod[1]-geod[0])
         samples=geods[N-1]
-    M = (T-mean(T.T,axis=1)).T
-    [evalue,evector] = linalg.eig(cov(M))
-    perm=(-1*evalue).argsort()
-    evalue=np.real(evalue)[perm]
-    evector=np.real(evector.T).reshape((-1,V0.shape[0],3))[perm]
+        
+    F_sol= torch.from_numpy(F0).to(dtype=torch.long, device=torchdeviceId) 
+    V = torch.from_numpy(V0).to(dtype=torchdtype, device=torchdeviceId)    
+    M = torch.from_numpy((T-mean(T,axis=0))).to(dtype=torchdtype, device=torchdeviceId)    
+    cov=np.zeros((M.shape[0],M.shape[0]))
     
     
+    for i in range(0,M.shape[0]):
+        for j in range(i,M.shape[0]):
+            cov[i,j]=getH2Metric(V,M[i,:,:],M[j,:,:],a0,a1,b1,c1,d1,a2,F_sol)
+            cov[j,i]=cov[i,j]
+    
+    [evalue,evector] = linalg.eig(cov)
+    evector_d=np.real(evector).T   
+    M=M.cpu().numpy()    
     PCs=[]
     if tol is not None:
-        for i in range(0,coeff.shape[0]):
+        for i in range(0,evalue.shape[0]):
+            evector=np.zeros((M.shape[1],3))
+            for j in range(0,evalue.shape[0]):
+                evector+=evector_d[i,j]*M[j]
+            
+            print(evector.shape)
             if evalue[i]>tol:
-                PC1p,F=H2InitialValueProblem(V0,evalue[i]*evector[i],k,a0,a1,b1,c1,d1,a2,F0)
-                PC1n,F=H2InitialValueProblem(V0,-evalue[i]*evector[i],k,a0,a1,b1,c1,d1,a2,F0)
+                PC1p,F=H2InitialValueProblem(V0,3*evector,k,a0,a1,b1,c1,d1,a2,F0)
+                PC1n,F=H2InitialValueProblem(V0,-3*evector,k,a0,a1,b1,c1,d1,a2,F0)
                 PC1=np.concatenate((np.flip(PC1n,axis=0),PC1p[1:]),axis=0)
                 PCs+=[PC1]
             return evalue,evector,PCs
     else:
         for i in range(0,components):
-            PC1p,F=H2InitialValueProblem(V0,evalue[i]*evector[i],k,a0,a1,b1,c1,d1,a2,F0)
-            PC1n,F=H2InitialValueProblem(V0,-evalue[i]*evector[i],k,a0,a1,b1,c1,d1,a2,F0)
+            evector=np.zeros((M.shape[1],3))
+            for j in range(0,evalue.shape[0]):
+                evector+=evector_d[i,j]*M[j]
+            
+            print(evector.shape)
+            PC1p,F=H2InitialValueProblem(V0,3*evector,k,a0,a1,b1,c1,d1,a2,F0)
+            PC1n,F=H2InitialValueProblem(V0,-3*evector,k,a0,a1,b1,c1,d1,a2,F0)
             PC1=np.concatenate((np.flip(PC1n,axis=0),PC1p[1:]),axis=0)
             PCs+=[PC1]
         return evalue,evector,PCs
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
