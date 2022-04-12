@@ -22,12 +22,13 @@ References
 
     @misc{H2_match,
       author  = {Emmanuel Hartman, Yashil Sukurdeep, Eric Klassen, Nicolas Charon, and Martin Bauer},
-      title   = {Elastic shape analysis of surfaces with second-order Sobolev metrics: a comprehensive numerical framework},
-      note    = {Preprint available on ArXiv},
-      year    = {2022},
+      title   = {Elastic shape analysis of surfaces with second-order Sobolev metrics: a comprehensive numerical framework},  
+      url = {https://arxiv.org/abs/2204.04238},
+      publisher = {arXiv},  
+      year = {2022},
     }
 
-Please cite this paper in your work.
+Please cite [this paper](https://arxiv.org/abs/2204.04238) in your work.
 
 Usage
 -----------
