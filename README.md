@@ -40,7 +40,7 @@ Several scripts that demonstrate the usage of our main functions have been inclu
 Dependencies
 ------------
 
-SRNFmatch is entirely written in Python while taking advantage of parallel computing on GPUs through CUDA. 
+H2Surface_Match is entirely written in Python while taking advantage of parallel computing on GPUs through CUDA. 
 For that reason, it must be used on a machine equipped with an NVIDIA graphics card with recent CUDA drivers installed.
 The code involves in addition the following Python libraries:
 
