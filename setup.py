@@ -7,6 +7,7 @@ setup(
     long_description='This Python package provides a set of tools for the comparison, matching and interpolation of triangulated surfaces within the elastic shape analysis setting. It allows specifically to solve the geodesic matching and distance computation problem between two surfaces with respect to a second order Sobolev metric. In addition to basic shape matching, we develop a comprehensive statistical pipeline that allows for the computation of the Karcher means, tangent space principal component analysis, and motion transfer in the space of parametrized surfaces and in shape space. Thus, our framework is equipped to handle statistical analysis of populations of shapes. Further to improve the robustness of our model, we implement a weighted varifold matching framework for partial matching. By implementing partiality in our methods we allow for the analysis of shape populations that a include surfaces that are noisy or are missing data. Further, this adaptation allows for a more natural comparison of shapes with different mesh structures and even allows for the comparison of shapes with different topologies.',
     url='https://github.com/emmanuel-hartman/H2_SurfaceMatch',
     keywords='Surface, Matching, Registration',
+    packages=find_packages(include=['H2_SurfaceMatch', 'H2_SurfaceMatch.*']),
     python_requires='>=3.7, <4',
     install_requires=[
         'torch>=1.13.0',
