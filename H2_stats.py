@@ -147,8 +147,8 @@ def H2_UnparamPCA(V0,samples,F0,a0,a1,b1,c1,d1,a2,paramlist,components=1,tol=Non
             
             print(evector.shape)
             if evalue[i]>tol:
-                PC1p,F=H2InitialValueProblem(V0,evalues[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
-                PC1n,F=H2InitialValueProblem(V0,-1*evalues[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
+                PC1p,F=H2InitialValueProblem(V0,k*evalue[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
+                PC1n,F=H2InitialValueProblem(V0,-1*k*evalue[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
                 PC1=np.concatenate((np.flip(PC1n,axis=0),PC1p[1:]),axis=0)
                 PCs+=[PC1]
             return evalue,evector,PCs
@@ -159,8 +159,8 @@ def H2_UnparamPCA(V0,samples,F0,a0,a1,b1,c1,d1,a2,paramlist,components=1,tol=Non
                 evector+=evector_d[i,j]*M[j]
             
             print(evector.shape)
-            PC1p,F=H2InitialValueProblem(V0,evalues[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
-            PC1n,F=H2InitialValueProblem(V0,-1*evalues[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
+            PC1p,F=H2InitialValueProblem(V0,k*evalue[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
+            PC1n,F=H2InitialValueProblem(V0,-1*k*evalue[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
             PC1=np.concatenate((np.flip(PC1n,axis=0),PC1p[1:]),axis=0)
             PCs+=[PC1]
         return evalue,evector,PCs
@@ -208,8 +208,8 @@ def H2PCA(V0,samples,F0,a0,a1,b1,c1,d1,a2,paramlist,components=1,tol=None, geods
             
             print(evector.shape)
             if evalue[i]>tol:
-                PC1p,F=H2InitialValueProblem(V0,evalues[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
-                PC1n,F=H2InitialValueProblem(V0,-1*evalues[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
+                PC1p,F=H2InitialValueProblem(V0,k*evalue[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
+                PC1n,F=H2InitialValueProblem(V0,-1*k*evalue[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
                 PC1=np.concatenate((np.flip(PC1n,axis=0),PC1p[1:]),axis=0)
                 PCs+=[PC1]
             return evalue,evector,PCs
@@ -220,8 +220,8 @@ def H2PCA(V0,samples,F0,a0,a1,b1,c1,d1,a2,paramlist,components=1,tol=None, geods
                 evector+=evector_d[i,j]*M[j]
             
             print(evector.shape)
-            PC1p,F=H2InitialValueProblem(V0,evalues[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
-            PC1n,F=H2InitialValueProblem(V0,-1*evalues[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
+            PC1p,F=H2InitialValueProblem(V0,k*evalue[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
+            PC1n,F=H2InitialValueProblem(V0,-1*k*evalue[i]*evector,k,a0,a1,b1,c1,d1,a2,F0)
             PC1=np.concatenate((np.flip(PC1n,axis=0),PC1p[1:]),axis=0)
             PCs+=[PC1]
         return evalue,evector,PCs

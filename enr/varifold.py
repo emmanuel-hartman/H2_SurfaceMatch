@@ -1,5 +1,5 @@
-from pykeops.torch import kernel_product, Genred
-from pykeops.torch.kernel_product.formula import *
+from pykeops.torch import Genred
+#from pykeops.torch.kernel_product.formula import *
 
 import torch
 import numpy as np
@@ -76,6 +76,8 @@ def VKerenl(kernel_geom,kernel_grass,kernel_fun,sig_geom,sig_grass,sig_fun):
         expr_geom = 'Exp(-SqDist(x,y)*a)'
     elif kernel_geom.lower() == "cauchy":
         expr_geom = 'IntCst(1)/(IntCst(1)+SqDist(x,y)*a)'
+    elif kernel_geom.lower() == "energy":
+        expr_geom = '-Clamp(Norm2(x-y),cmin,cmax)'
 
     #kernel on Grassmanian
     if kernel_grass.lower() == 'constant':
@@ -114,9 +116,100 @@ def VKerenl(kernel_geom,kernel_grass,kernel_fun,sig_geom,sig_grass,sig_fun):
     return K
 
 
-    
-    
-    
+def Energy_Kernel(cmin,cmax):
+
+    def K(x, y, r1, r2):
+        d = x.shape[1]
+        pK = Genred('-Clamp(Norm2(x-y),a,b)*r',
+            ['a=Pm(1)','b=Pm(1)','x=Vi('+str(d)+')','y=Vj('+str(d)+')','r=Vj(1)'],
+            reduction_op='Sum',
+            axis=1)
+        return (pK(cmin,cmax,x,y,r2)*r1).sum()
+    return K
+
+
+def lossEnergyScaled(FS, VT, FT, K):
+    def CompCLNn(F, V):
+
+        if F.shape[1] == 2:
+            V0, V1 = V.index_select(0, F[:, 0]), V.index_select(0, F[:, 1])
+            C, N =  (V0 + V1)/2, V1 - V0
+        else:
+            V0, V1, V2 = V.index_select(0, F[:, 0]), V.index_select(0, F[:, 1]), V.index_select(0, F[:, 2])
+            C, N =  (V0 + V1 + V2)/3, .5 * torch.cross(V1 - V0, V2 - V0)
+
+        L = (N ** 2).sum(dim=1)[:, None].clamp_(min=1e-6).sqrt()
+        return C, L, N / L
+
+    CT, LT, NTn = CompCLNn(FT, VT)
+    LT=LT/LT.sum()
+    cst = K(CT, CT, LT, LT)
+    def loss(VS):
+        CS, LS, NSn = CompCLNn(FS, VS)
+        LS=LS/LS.sum()
+        return cst + K(CS, CS, LS, LS) - 2 * K(CS, CT, LS, LT)
+    return loss
+
+
+def lossEnerdProdScaled(FS, VT, FT, K, scaling_flag):
+    def CompCLNn(F, V):
+
+        if F.shape[1] == 2:
+            V0, V1 = V.index_select(0, F[:, 0]), V.index_select(0, F[:, 1])
+            C, N = (V0 + V1) / 2, V1 - V0
+        else:
+            V0, V1, V2 = V.index_select(0, F[:, 0]), V.index_select(0, F[:, 1]), V.index_select(0, F[:, 2])
+            C, N = (V0 + V1 + V2) / 3, .5 * torch.cross(V1 - V0, V2 - V0)
+
+        L = (N ** 2).sum(dim=1)[:, None].clamp_(min=1e-6).sqrt()
+        return C, L, N / L
+
+    CT, LT, NTn = CompCLNn(FT, VT)
+    LT=LT/LT.sum()
+
+    if scaling_flag==1:
+        def loss(VS):
+            CS, LS, NSn = CompCLNn(FS, VS)
+            LS = LS / LS.sum()
+            return K(CS, CS, LS, LS) - 2 * K(CS, CT, LS, LT)
+    else:
+        def loss(VS):
+            CS, LS, NSn = CompCLNn(FS, VS)
+            LS = LS / LS.sum()
+            return - 2 * K(CS, CT, LS, LT)
+
+    return loss
+
+def lossVarifoldProd(FS,FunS, VT, FT, FunT, K, scaling_flag):
+    def CompCLNn(F, V, Fun):
+
+        if F.shape[1] == 2:
+            V0, V1 = V.index_select(0, F[:, 0]), V.index_select(0, F[:, 1])
+            Fun0, Fun1 = Fun.index_select(0, F[:, 0]), Fun.index_select(0, F[:, 1])
+            C, N, Fun_F =  (V0 + V1)/2, V1 - V0, (Fun0 + Fun1)/2
+        else:
+            V0, V1, V2 = V.index_select(0, F[:, 0]), V.index_select(0, F[:, 1]), V.index_select(0, F[:, 2])
+            Fun0, Fun1, Fun2 = Fun.index_select(0, F[:, 0]), Fun.index_select(0, F[:, 1]), Fun.index_select(0, F[:, 2])
+            C, N, Fun_F =  (V0 + V1 + V2)/3, .5 * torch.cross(V1 - V0, V2 - V0), (Fun0 + Fun1 + Fun2)/3
+
+        L = (N ** 2).sum(dim=1)[:, None].clamp_(min=1e-6).sqrt()
+        [n]=list(Fun_F.size())
+        Fun_F=Fun_F.resize_((n,1))
+        return C, L, N / L, Fun_F
+
+    CT, LT, NTn, Fun_FT = CompCLNn(FT, VT, FunT)
+    #cst = K(CT, CT, NTn, NTn, Fun_FT, Fun_FT, LT, LT)
+
+    if scaling_flag==1:
+        def loss(VS):
+            CS, LS, NSn, Fun_FS = CompCLNn(FS, VS, FunS)
+            return K(CS, CS, NSn, NSn, Fun_FS, Fun_FS, LS, LS) - 2 * K(CS, CT, NSn, NTn, Fun_FS, Fun_FT, LS, LT)
+    else:
+        def loss(VS):
+            CS, LS, NSn, Fun_FS = CompCLNn(FS, VS, FunS)
+            return - 2 * K(CS, CT, NSn, NTn, Fun_FS, Fun_FT, LS, LT)
+
+    return loss
     
     
     

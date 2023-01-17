@@ -226,6 +226,7 @@ def plotPartialGeodesic(geod,F,source=None,target=None,Rho=None,file_name=None,o
     else:
         ls = makeGeodMeshes(geod,F,source,target,\
                             offsetstep=offsetstep,stepsize=stepsize,axis=axis,angle=angle)
+    
     o3d.visualization.draw_geometries(ls)
     
     # Save plots if specified by user
