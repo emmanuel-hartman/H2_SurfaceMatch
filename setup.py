@@ -1,6 +1,6 @@
 from setuptools import setup
 setup(
-    name='H2SM',
+    name='SurfaceMatch',
     version='1.0',
     author='Emmanuel Hartman, Martin Bauer, Yashil Sukurdeep, and Nicolas Charon',
     description='his Python package provides a set of tools for the comparison, matching and interpolation of triangulated surfaces within the elastic shape analysis setting.',
