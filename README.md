@@ -44,10 +44,10 @@ H2Surface_Match is entirely written in Python while taking advantage of parallel
 For that reason, it must be used on a machine equipped with an NVIDIA graphics card with recent CUDA drivers installed.
 The code involves in addition the following Python libraries:
 
-* Numpy 1.19.2 and Scipy 1.6.2
-* Pytorch 1.4
-* PyKeops 1.5 (https://www.kernel-operations.io/keops/index.html)
-* Open3D 0.12.0
+* Numpy (1.19.2) and Scipy (1.6.2)
+* Pytorch (1.13.1)
+* PyKeops (2.1.1) (https://www.kernel-operations.io/keops/index.html)
+* Open3D (0.12.0)
 
 Note that Open3d is primarily used for surface reading, saving, visualization and simple mesh processing operations (decimation, subdivision...). Other libraries such as PyMesh could be used as potential replacement with relatively small modifications to our code.  
 
