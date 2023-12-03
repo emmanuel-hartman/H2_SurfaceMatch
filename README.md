@@ -30,7 +30,7 @@ References
     doi = {10.1007/s11263-022-01743-0}
     }
 
-Please cite [this paper]([https://arxiv.org/abs/2204.04238](https://link.springer.com/article/10.1007/s11263-022-01743-0) in your work.
+Please cite [this paper](https://link.springer.com/article/10.1007/s11263-022-01743-0) in your work.
 
 Usage
 -----------
