@@ -19,17 +19,18 @@ This Python package provides a set of tools for the comparison, matching and int
 
 References
 ------------
-
-
-    @misc{H2_match,
-      author  = {Emmanuel Hartman, Yashil Sukurdeep, Eric Klassen, Nicolas Charon, and Martin Bauer},
-      title   = {Elastic shape analysis of surfaces with second-order Sobolev metrics: a comprehensive numerical framework},  
-      url = {https://arxiv.org/abs/2204.04238},
-      publisher = {arXiv},  
-      year = {2022},
+    @article{hartman2022elastic,
+    author = {Hartman, Emmanuel and Sukurdeep, Yashil and Klassen, Eric and Charon, Nicolas and Bauer, Martin},
+    year = {2023},
+    month = {01},
+    pages = {},
+    title = {{Elastic Shape Analysis of Surfaces with Second-Order Sobolev Metrics: A Comprehensive Numerical Framework}},
+    volume = {131},
+    journal = {International Journal of Computer Vision},
+    doi = {10.1007/s11263-022-01743-0}
     }
 
-Please cite [this paper](https://arxiv.org/abs/2204.04238) in your work.
+Please cite [this paper]([https://arxiv.org/abs/2204.04238](https://link.springer.com/article/10.1007/s11263-022-01743-0) in your work.
 
 Usage
 -----------
